@@ -29,3 +29,19 @@ export type {
   ConfirmBookingResponse,
   SelectionError,
 } from "./seats"
+export type {
+  AdminRouteItem,
+  AdminRouteListResponse,
+  CreateRouteRequest,
+  AdminBusItem,
+  AdminBusListResponse,
+  CreateBusRequest,
+  UpdateBusRequest,
+  AdminTripItem,
+  AdminTripListResponse,
+  CreateTripRequest,
+  UpdateTripRequest,
+  AdminBookingItem,
+  AdminBookingListResponse,
+  AdminDashboardResponse,
+} from "./admin"

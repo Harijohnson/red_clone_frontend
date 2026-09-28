@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import Navbar from "@/components/layout/Navbar"
 import ProtectedRoute from "@/components/ProtectedRoute"
+import AdminRoute from "@/components/AdminRoute"
 import Home from "@/pages/Home"
 import Login from "@/pages/Login"
 import Register from "@/pages/Register"
@@ -10,6 +11,12 @@ import PassengerDetails from "@/pages/PassengerDetails"
 import PaymentPlaceholder from "@/pages/PaymentPlaceholder"
 import BookingConfirmation from "@/pages/BookingConfirmation"
 import MyBookings from "@/pages/MyBookings"
+import AdminLayout from "@/pages/admin/AdminLayout"
+import AdminDashboard from "@/pages/admin/AdminDashboard"
+import AdminTrips from "@/pages/admin/AdminTrips"
+import AdminBuses from "@/pages/admin/AdminBuses"
+import AdminRoutes from "@/pages/admin/AdminRoutes"
+import AdminBookings from "@/pages/admin/AdminBookings"
 
 export default function App() {
   return (
@@ -61,6 +68,20 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="trips" element={<AdminTrips />} />
+            <Route path="buses" element={<AdminBuses />} />
+            <Route path="routes" element={<AdminRoutes />} />
+            <Route path="bookings" element={<AdminBookings />} />
+          </Route>
         </Routes>
       </div>
     </BrowserRouter>

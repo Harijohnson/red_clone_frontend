@@ -27,6 +27,14 @@ export default function Navbar() {
                 >
                   My Bookings
                 </Link>
+                {(user.role === "admin" || user.role === "operator") && (
+                  <Link
+                    to="/admin"
+                    className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <span className="text-sm text-muted-foreground">{user.name}</span>
                 <button
                   onClick={handleLogout}
