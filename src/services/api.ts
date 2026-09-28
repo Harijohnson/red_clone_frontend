@@ -5,13 +5,13 @@ import type { ApiError } from "@/types/api"
 const TOKEN_KEY = "rc_token"
 
 // Vite exposes env vars prefixed with `VITE_` via `import.meta.env`.
-// Use `VITE_BACKEND_API_URL` to avoid bundler/runtime issues.
-const baseURL = (import.meta.env.VITE_BACKEND_API_URL ?? import.meta.env.BACKEND_API_URL) as string
+// Use `BACKEND_API_URL` to avoid bundler/runtime issues.
+const baseURL = (import.meta.env.BACKEND_API_URL ?? import.meta.env.BACKEND_API_URL) as string
 
 if (!baseURL) {
   // Provide a clearer error with guidance for developers.
   throw new Error(
-    "VITE_BACKEND_API_URL is not defined. Add it to frontend/.env or .env.local and restart the dev server."
+    "BACKEND_API_URL is not defined. Add it to frontend/.env or .env.local and restart the dev server."
   )
 }
 
