@@ -3,7 +3,7 @@ import { format, parse, isValid } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button"
 import { cn } from "cn"
 
 type DatePickerProps = {
@@ -71,19 +71,17 @@ export function DateTimePicker(props: DatePickerProps | DateTimePickerProps) {
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            "w-full justify-start gap-2 text-left font-normal",
-            !dateObj && "text-muted-foreground",
-            hasError && "border-destructive focus-visible:ring-destructive/40",
-            className,
-          )}
-        >
-          <CalendarIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span className="truncate">{displayLabel}</span>
-        </Button>
+      <PopoverTrigger
+        className={cn(
+          buttonVariants({ variant: "outline" }),
+          "w-full justify-start gap-2 text-left font-normal",
+          !dateObj && "text-muted-foreground",
+          hasError && "border-destructive focus-visible:ring-destructive/40",
+          className,
+        )}
+      >
+        <CalendarIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
+        <span className="truncate">{displayLabel}</span>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
@@ -91,7 +89,6 @@ export function DateTimePicker(props: DatePickerProps | DateTimePickerProps) {
           selected={dateObj}
           onSelect={handleDaySelect}
           disabled={(day) => !!minDate && day < minDate}
-          initialFocus
         />
         {showTime && (
           <div className="border-t px-3 pb-3 pt-2">
