@@ -170,7 +170,7 @@ export default function PassengerDetails() {
     }
 
     return () => {
-      if (lockExpiredRef.current || !tripId) return
+      if (lockExpiredRef.current || releasedRef.current || !tripId) return
       releaseTimerRef.current = setTimeout(() => {
         releaseTimerRef.current = null
         releaseLock(tripId).catch(() => { /* best-effort */ })
