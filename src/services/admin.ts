@@ -13,6 +13,7 @@ import type {
   UpdateTripRequest,
   AdminBookingListResponse,
   AdminDashboardResponse,
+  AdminAnalyticsResponse,
 } from "@/types/admin"
 
 // ---------------------------------------------------------------------------
@@ -21,6 +22,11 @@ import type {
 
 export async function fetchDashboard(): Promise<AdminDashboardResponse> {
   const res = await apiClient.get<AdminDashboardResponse>("/admin/dashboard")
+  return res.data
+}
+
+export async function fetchAnalytics(): Promise<AdminAnalyticsResponse> {
+  const res = await apiClient.get<AdminAnalyticsResponse>("/admin/analytics")
   return res.data
 }
 

@@ -31,7 +31,7 @@ export default function SeatGrid({ seats, selected, onToggle, maxSelect = 6 }: P
   const deckOrder: DeckType[] = ["single", "lower", "upper"]
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-wrap gap-8 items-start">
       {deckOrder.map((deck) => {
         const deckSeats = decks.get(deck)
         if (!deckSeats || deckSeats.length === 0) return null

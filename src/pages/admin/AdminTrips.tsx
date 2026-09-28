@@ -9,6 +9,7 @@ import {
 } from "@/services/admin"
 import type { AdminTripItem, AdminRouteItem, AdminBusItem, CreateTripRequest, UpdateTripRequest } from "@/types/admin"
 import type { ApiError } from "@/types"
+import { DateTimePicker } from "@/components/ui/DateTimePicker"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -138,20 +139,20 @@ function CreateTripForm({ routes, buses, onSubmit, onClose }: CreateFormProps) {
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium">Departure</label>
-          <input
-            type="datetime-local"
+          <DateTimePicker
+            showTime
             value={form.departureTime}
-            onChange={(e) => setForm((p) => ({ ...p, departureTime: e.target.value }))}
-            className={inputClass()}
+            onChange={(val) => setForm((p) => ({ ...p, departureTime: val }))}
+            placeholder="Pick departure"
           />
         </div>
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium">Arrival</label>
-          <input
-            type="datetime-local"
+          <DateTimePicker
+            showTime
             value={form.arrivalTime}
-            onChange={(e) => setForm((p) => ({ ...p, arrivalTime: e.target.value }))}
-            className={inputClass()}
+            onChange={(val) => setForm((p) => ({ ...p, arrivalTime: val }))}
+            placeholder="Pick arrival"
           />
         </div>
       </div>
@@ -229,20 +230,20 @@ function EditTripForm({ trip, onSubmit, onClose }: EditFormProps) {
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium">Departure</label>
-          <input
-            type="datetime-local"
+          <DateTimePicker
+            showTime
             value={form.departureTime}
-            onChange={(e) => setForm((p) => ({ ...p, departureTime: e.target.value }))}
-            className={inputClass()}
+            onChange={(val) => setForm((p) => ({ ...p, departureTime: val }))}
+            placeholder="Pick departure"
           />
         </div>
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium">Arrival</label>
-          <input
-            type="datetime-local"
+          <DateTimePicker
+            showTime
             value={form.arrivalTime}
-            onChange={(e) => setForm((p) => ({ ...p, arrivalTime: e.target.value }))}
-            className={inputClass()}
+            onChange={(val) => setForm((p) => ({ ...p, arrivalTime: val }))}
+            placeholder="Pick arrival"
           />
         </div>
       </div>

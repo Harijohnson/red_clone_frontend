@@ -155,3 +155,21 @@ export type AdminDashboardResponse = {
   totalBookings: number
   confirmedBookings: number
 }
+
+// ---------------------------------------------------------------------------
+// Analytics
+// ---------------------------------------------------------------------------
+
+export type AnalyticsDayData = {
+  date: string
+  bookings: number
+  seats: number
+  revenue: number
+}
+
+export type AdminAnalyticsResponse = {
+  days: AnalyticsDayData[]
+  totalBookings: number
+  totalSeats: number
+  totalRevenue: number
+}

@@ -438,18 +438,18 @@ type PassengerCardProps = {
 
 function PassengerCard({ index, seatNumber, form, errors, onChange }: PassengerCardProps) {
   return (
-    <fieldset className="rounded-xl border bg-card p-5">
-      <legend className="flex items-center gap-2 px-1">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+    <div className="rounded-xl border bg-card overflow-hidden">
+      <div className="flex items-center gap-2 border-b bg-muted/40 px-5 py-3">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
           {index + 1}
         </span>
         <span className="text-sm font-semibold">Passenger {index + 1}</span>
         <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground">
           Seat {seatNumber}
         </span>
-      </legend>
+      </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="p-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Full name */}
         <div className="sm:col-span-2">
           <Field
@@ -532,7 +532,7 @@ function PassengerCard({ index, seatNumber, form, errors, onChange }: PassengerC
           </Field>
         </div>
       </div>
-    </fieldset>
+    </div>
   )
 }
 

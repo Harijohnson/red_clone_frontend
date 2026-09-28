@@ -24,7 +24,7 @@ function AppShell() {
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      {!isAdmin && <Navbar />}
+      {!isAdmin && <div className="print:hidden"><Navbar /></div>}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

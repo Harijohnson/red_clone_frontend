@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router-dom"
 import { fetchBookingById } from "@/services/bookings"
 import { RouteMapSvg } from "@/components/ui/RouteMapSvg"
-import { CheckCircle2, User, MapPin, Clock, IndianRupee, Ticket } from "lucide-react"
+import { CheckCircle2, User, MapPin, Clock, IndianRupee, Ticket, Printer } from "lucide-react"
 import type { BookingDetail } from "@/types"
 import type { ApiError } from "@/types"
 
@@ -130,6 +130,8 @@ export default function BookingConfirmation() {
   const arr = formatDateTime(booking.trip.arrivalTime)
   const booked = formatDateTime(booking.bookedAt)
   const duration = formatDuration(booking.trip.departureTime, booking.trip.arrivalTime)
+
+  const handlePrint = () => window.print()
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
@@ -275,13 +277,20 @@ export default function BookingConfirmation() {
       </section>
 
       {/* ── Actions ── */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 print:hidden">
         <Link
           to="/my-bookings"
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
           View all bookings
         </Link>
+        <button
+          onClick={handlePrint}
+          className="flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted"
+        >
+          <Printer className="h-4 w-4" />
+          Print Ticket
+        </button>
         <Link
           to="/"
           className="ml-auto flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"

@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { searchTrips, getCities } from "@/services/trips"
 import type { ApiError, SearchParams } from "@/types"
-import { MapPin, Calendar, ArrowUpDown, Bus, Search, Ticket } from "lucide-react"
+import { MapPin, ArrowUpDown, Bus, Search, Ticket } from "lucide-react"
+import { DateTimePicker } from "@/components/ui/DateTimePicker"
 
 type FormErrors = {
   from?: string
@@ -267,18 +268,17 @@ export default function Home() {
 
               {/* Date */}
               <Field label="Travel Date" error={errors.date}>
-                <div className="relative">
-                  <Calendar className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    id="date"
-                    name="date"
-                    type="date"
-                    value={form.date}
-                    onChange={handleChange}
-                    min={getTodayISO()}
-                    className={`${inputClass(!!errors.date)} pl-9`}
-                  />
-                </div>
+                <DateTimePicker
+                  value={form.date}
+                  onChange={(val) => {
+                    setForm((prev) => ({ ...prev, date: val }))
+                    setErrors((prev) => ({ ...prev, date: undefined }))
+                    setApiError(null)
+                  }}
+                  placeholder="Select travel date"
+                  hasError={!!errors.date}
+                  minDate={new Date(getTodayISO())}
+                />
               </Field>
 
               {apiError && (
