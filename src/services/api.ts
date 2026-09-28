@@ -4,11 +4,8 @@ import type { ApiError } from "@/types/api"
 
 const TOKEN_KEY = "rc_token"
 
-const baseURL = import.meta.env.API_URL as string
-
-if (!baseURL) {
-  throw new Error("API_URL is not defined. Check your .env file.")
-}
+const baseURL =
+  import.meta.env.VITE_API_URL ?? "https://red-clone-backend.vercel.app/api"
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL,
