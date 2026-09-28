@@ -8,6 +8,16 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- runtime env config will be injected here when deploying -->
+    <script>
+      (function () {
+        // If a static env-config.js exists (deployed), load it before the app
+        var s = document.createElement('script')
+        s.src = '/env-config.js'
+        s.defer = true
+        document.head.appendChild(s)
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

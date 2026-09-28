@@ -6,10 +6,12 @@ const TOKEN_KEY = "rc_token"
 
 // Prefer non-prefixed `BACKEND_API_URL` (Vercel/runtime). Fall back to other sources.
 const runtimeMeta = typeof document !== "undefined" ? document.querySelector('meta[name="backend-api-url"]')?.getAttribute("content") : undefined
+const injected = (globalThis as any).__env?.BACKEND_API_URL ?? (globalThis as any).BACKEND_API_URL
+
 const baseURL = (
   import.meta.env.BACKEND_API_URL ??
   import.meta.env.VITE_BACKEND_API_URL ??
-  (globalThis as any).BACKEND_API_URL ??
+  injected ??
   runtimeMeta
 ) as string
 
