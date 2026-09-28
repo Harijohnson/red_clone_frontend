@@ -5,7 +5,7 @@ import type { ApiError } from "@/types/api"
 const TOKEN_KEY = "rc_token"
 
 // Vite exposes env vars prefixed with `VITE_` via `import.meta.env`.
-// Use `BACKEND_API_URL` to avoid bundler/runtime issues.
+// Prefer `VITE_BACKEND_API_URL`; fall back to legacy `BACKEND_API_URL`.
 const baseURL = (import.meta.env.BACKEND_API_URL ?? import.meta.env.BACKEND_API_URL) as string
 
 if (!baseURL) {
