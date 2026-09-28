@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchAdminBookings, cancelAdminBooking } from "@/services/admin"
+import { fetchAdminBookings, cancelAdminBooking, fetchAllAdminBookings } from "@/services/admin"
 import type { AdminBookingItem } from "@/types/admin"
 import type { ApiError } from "@/types"
 
@@ -77,6 +77,84 @@ function ConfirmCancelDialog({
   )
 }
 
+function exportBookingsPDF(items: AdminBookingItem[]) {
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+  const formatTime = (iso: string) =>
+    new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true })
+
+  const rows = items
+    .map(
+      (b) => `
+      <tr>
+        <td>${b.bookingReference}</td>
+        <td>${b.user.name}<br/><small>${b.user.email}</small></td>
+        <td>${b.trip.source} → ${b.trip.destination}</td>
+        <td>${b.trip.busName}</td>
+        <td>${formatDate(b.trip.departureTime)}<br/><small>${formatTime(b.trip.departureTime)}</small></td>
+        <td>${b.seats.join(", ")}</td>
+        <td>₹${b.totalAmount.toLocaleString("en-IN")}</td>
+        <td class="status ${b.bookingStatus}">${b.bookingStatus}</td>
+        <td class="status ${b.paymentStatus}">${b.paymentStatus}</td>
+      </tr>`,
+    )
+    .join("")
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookings Export — ${new Date().toLocaleDateString("en-IN")}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; font-size: 11px; color: #111; padding: 24px; }
+    h1 { font-size: 16px; margin-bottom: 4px; }
+    .meta { font-size: 11px; color: #555; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #d1d5db; padding: 6px 8px; text-align: left; vertical-align: top; }
+    thead th { background: #f3f4f6; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+    tbody tr:nth-child(even) { background: #f9fafb; }
+    small { font-size: 10px; color: #6b7280; }
+    .status { font-size: 10px; font-weight: 600; text-transform: capitalize; }
+    .confirmed, .paid { color: #15803d; }
+    .cancelled, .unpaid { color: #b91c1c; }
+    .pending { color: #b45309; }
+    .refunded { color: #1d4ed8; }
+    @media print {
+      body { padding: 0; }
+      @page { margin: 16mm; size: A4 landscape; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Bookings Report</h1>
+  <p class="meta">Exported on ${new Date().toLocaleString("en-IN")} &nbsp;·&nbsp; ${items.length} bookings</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Reference</th>
+        <th>Customer</th>
+        <th>Route</th>
+        <th>Bus</th>
+        <th>Departure</th>
+        <th>Seats</th>
+        <th>Amount</th>
+        <th>Status</th>
+        <th>Payment</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <script>window.onload = () => { window.print() }<\/script>
+</body>
+</html>`
+
+  const win = window.open("", "_blank")
+  if (!win) return
+  win.document.write(html)
+  win.document.close()
+}
+
 export default function AdminBookings() {
   const [bookings, setBookings] = useState<AdminBookingItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -85,6 +163,7 @@ export default function AdminBookings() {
   const [totalPages, setTotalPages] = useState(1)
   const [cancelTarget, setCancelTarget] = useState<AdminBookingItem | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
+  const [exportLoading, setExportLoading] = useState(false)
 
   function loadBookings(p: number) {
     setLoading(true)
@@ -121,10 +200,36 @@ export default function AdminBookings() {
     }
   }
 
+  async function handleExport() {
+    setExportLoading(true)
+    try {
+      const data = await fetchAllAdminBookings()
+      exportBookingsPDF(data.bookings)
+    } catch (err) {
+      setError((err as ApiError).message ?? "Failed to export bookings.")
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">All Bookings</h2>
+        <button
+          onClick={handleExport}
+          disabled={exportLoading}
+          className="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-50"
+        >
+          {exportLoading ? (
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+          )}
+          {exportLoading ? "Preparing…" : "Export PDF"}
+        </button>
       </div>
 
       {error && <p className="mb-4 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>}

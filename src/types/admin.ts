@@ -33,6 +33,7 @@ export type SeatLayoutInput = {
   row: number
   column: number
   type: "window" | "aisle" | "middle"
+  isFemaleSeat: boolean
 }
 
 export type AdminBusItem = {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useParams, Link, useNavigate } from "react-router-dom"
 import { fetchTripSeats, lockSeats } from "@/services/seats"
 import SeatGrid from "@/components/seats/SeatGrid"
+import { BookingSteps } from "@/components/ui/BookingSteps"
 import type { SeatEntry, TripSeatsResponse, ApiError, SelectionError, SeatSelectionState } from "@/types"
 
 const MAX_SEATS = 6
@@ -165,9 +166,10 @@ export default function TripSeats() {
   const isLocking = lockState.status === "locking"
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10">
+    <main className="mx-auto max-w-4xl px-4 py-8">
+      <BookingSteps current={3} />
       <div className="mb-6 flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Select Seats</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Select Your Seats</h1>
         <Link
           to="/"
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"
@@ -341,19 +343,57 @@ function LockFailedBanner({
 
 function Legend() {
   return (
-    <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-      {[
-        { color: "bg-muted", label: "Available" },
-        { color: "bg-primary", label: "Selected" },
-        { color: "bg-muted/40 border border-muted", label: "Booked" },
-        { color: "bg-muted/40 border border-amber-400", label: "Locked" },
-        { color: "bg-amber-500/20 border border-amber-400", label: "Your hold" },
-      ].map(({ color, label }) => (
-        <span key={label} className="flex items-center gap-1.5">
-          <span className={`inline-block h-4 w-4 rounded ${color}`} />
-          {label}
-        </span>
-      ))}
+    <div className="rounded-xl border bg-card p-4">
+      <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+        How to read the seat map
+      </p>
+      <div className="flex flex-wrap gap-x-8 gap-y-3 text-xs text-muted-foreground">
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+            Status
+          </p>
+          {[
+            { cls: "bg-muted", label: "Available — tap to select" },
+            { cls: "bg-primary", label: "Your selection" },
+            { cls: "bg-muted/30 opacity-50", label: "Booked — unavailable" },
+            { cls: "bg-muted/40 ring-1 ring-amber-400", label: "Held by someone else" },
+            { cls: "bg-amber-500/20 ring-1 ring-amber-400", label: "Your hold" },
+          ].map(({ cls, label }) => (
+            <span key={label} className="flex items-center gap-2">
+              <span className={`inline-block h-4 w-4 shrink-0 rounded-md ${cls}`} />
+              {label}
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+            Seat type
+          </p>
+          {[
+            { label: "Seater", desc: "Upright chair" },
+            { label: "Semi-sleeper", desc: "Slightly reclined" },
+            { label: "Sleeper", desc: "Flat berth — lie down" },
+          ].map(({ label, desc }) => (
+            <span key={label} className="flex items-center gap-2">
+              <span className="w-[72px] shrink-0 font-medium text-foreground/80">{label}</span>
+              <span className="text-muted-foreground/70">{desc}</span>
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-col gap-2">
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground/60">
+            Ladies seats
+          </p>
+          <span className="flex items-center gap-2">
+            <span className="relative inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-md bg-rose-50 ring-1 ring-rose-300 dark:bg-rose-950/30 dark:ring-rose-700">
+              <span className="absolute -right-1 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-rose-500 text-[7px] font-bold text-white">
+                ♀
+              </span>
+            </span>
+            <span>Reserved for ladies only</span>
+          </span>
+        </div>
+      </div>
     </div>
   )
 }

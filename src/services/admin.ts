@@ -110,3 +110,10 @@ export async function fetchAdminBookings(
 export async function cancelAdminBooking(bookingId: string): Promise<void> {
   await apiClient.patch(`/admin/bookings/${bookingId}/cancel`)
 }
+
+export async function fetchAllAdminBookings(): Promise<AdminBookingListResponse> {
+  const res = await apiClient.get<AdminBookingListResponse>("/admin/bookings", {
+    params: { page: 1, limit: 1000 },
+  })
+  return res.data
+}

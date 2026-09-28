@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom"
 import { createBooking } from "@/services/bookings"
 import { releaseLock } from "@/services/seats"
+import { BookingSteps } from "@/components/ui/BookingSteps"
+import { User, IndianRupee } from "lucide-react"
 import type { ValidatedPassenger, SeatSelectionState } from "@/types"
 import type { ApiError } from "@/types"
 
@@ -98,7 +100,9 @@ export default function PaymentPlaceholder() {
   // ── Summary + Confirm ────────────────────────────────────────────────────
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
+    <main className="mx-auto max-w-2xl px-4 py-8">
+      <BookingSteps current={5} />
+
       <div className="mb-2 flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold tracking-tight">Review & Confirm</h1>
         <Link
@@ -109,43 +113,54 @@ export default function PaymentPlaceholder() {
           Back
         </Link>
       </div>
-      <p className="mb-8 text-sm text-muted-foreground">
-        Payment is not yet required. Confirm your booking to receive a booking reference.
+      <p className="mb-6 text-sm text-muted-foreground">
+        Check your details below — no payment required to confirm.
       </p>
 
-      {/* Booking summary */}
-      <div className="mb-6 rounded-xl border bg-card p-5">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          Booking summary
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Seats:{" "}
-          <span className="font-mono font-medium text-foreground">
-            {state.seatNumbers.join(", ")}
-          </span>
-        </p>
-        {state.totalAmount > 0 && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            Total:{" "}
-            <span className="font-medium text-foreground">
-              ₹{state.totalAmount.toLocaleString("en-IN")}
-            </span>
+      {/* Passengers */}
+      {state.passengers.length > 0 && (
+        <div className="mb-4 rounded-xl border bg-card p-5">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Passengers
           </p>
-        )}
-        {state.passengers.length > 0 && (
-          <ul className="mt-3 flex flex-col gap-1.5 border-t pt-3">
-            {state.passengers.map((p) => (
-              <li key={p.seatNumber} className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {p.fullName}, {p.age} yrs
-                </span>
+          <ul className="flex flex-col divide-y">
+            {state.passengers.map((p: ValidatedPassenger) => (
+              <li key={p.seatNumber} className="flex items-center justify-between py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted">
+                    <User className="h-3.5 w-3.5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{p.fullName}</p>
+                    <p className="text-xs text-muted-foreground">{p.age} yrs · {p.gender}</p>
+                  </div>
+                </div>
                 <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs">
                   Seat {p.seatNumber}
                 </span>
               </li>
             ))}
           </ul>
-        )}
+        </div>
+      )}
+
+      {/* Seats + amount */}
+      <div className="mb-4 rounded-xl border bg-card p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs text-muted-foreground">Selected seats</p>
+            <p className="mt-0.5 font-mono font-medium">{state.seatNumbers.join(", ")}</p>
+          </div>
+          {state.totalAmount > 0 && (
+            <div className="text-right">
+              <p className="text-xs text-muted-foreground">Total amount</p>
+              <p className="mt-0.5 flex items-center gap-0.5 text-xl font-bold">
+                <IndianRupee className="h-4 w-4" />
+                {state.totalAmount.toLocaleString("en-IN")}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Error */}
@@ -174,8 +189,11 @@ export default function PaymentPlaceholder() {
           type="button"
           onClick={handleConfirm}
           disabled={submitting}
-          className="rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
         >
+          {submitting && (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+          )}
           {submitting ? "Confirming…" : "Confirm Booking"}
         </button>
       </div>

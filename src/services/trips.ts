@@ -11,3 +11,8 @@ export async function searchTrips(params: SearchParams): Promise<TripSearchRespo
   })
   return response.data
 }
+
+export async function getCities(): Promise<string[]> {
+  const response = await apiClient.get<{ cities: string[] }>("/cities")
+  return response.data.cities
+}

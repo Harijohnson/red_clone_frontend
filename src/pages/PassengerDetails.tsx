@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom"
 import { fetchTripSeats, releaseLock } from "@/services/seats"
 import { useLockCountdown, formatCountdown } from "@/hooks/useLockCountdown"
+import { BookingSteps } from "@/components/ui/BookingSteps"
+import { User, Phone } from "lucide-react"
 import type {
   Gender,
   PassengerForm,
@@ -274,7 +276,8 @@ export default function PassengerDetails() {
   // ---------------------------------------------------------------------------
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
+    <main className="mx-auto max-w-2xl px-4 py-8">
+      <BookingSteps current={4} />
       {/* Header */}
       <div className="mb-2 flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold tracking-tight">Passenger Details</h1>
@@ -436,10 +439,13 @@ type PassengerCardProps = {
 function PassengerCard({ index, seatNumber, form, errors, onChange }: PassengerCardProps) {
   return (
     <fieldset className="rounded-xl border bg-card p-5">
-      <legend className="px-1 text-sm font-semibold">
-        Passenger {index + 1}{" "}
-        <span className="font-mono text-xs font-normal text-muted-foreground">
-          · Seat {seatNumber}
+      <legend className="flex items-center gap-2 px-1">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+          {index + 1}
+        </span>
+        <span className="text-sm font-semibold">Passenger {index + 1}</span>
+        <span className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground">
+          Seat {seatNumber}
         </span>
       </legend>
 
@@ -452,15 +458,18 @@ function PassengerCard({ index, seatNumber, form, errors, onChange }: PassengerC
             error={errors.fullName}
             required
           >
-            <input
-              id={`fullName-${index}`}
-              type="text"
-              autoComplete="name"
-              value={form.fullName}
-              onChange={(e) => onChange("fullName", e.target.value)}
-              placeholder="As on government ID"
-              className={inputClass(!!errors.fullName)}
-            />
+            <div className="relative">
+              <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                id={`fullName-${index}`}
+                type="text"
+                autoComplete="name"
+                value={form.fullName}
+                onChange={(e) => onChange("fullName", e.target.value)}
+                placeholder="As on government ID"
+                className={`${inputClass(!!errors.fullName)} pl-9`}
+              />
+            </div>
           </Field>
         </div>
 
@@ -505,7 +514,8 @@ function PassengerCard({ index, seatNumber, form, errors, onChange }: PassengerC
             required
           >
             <div className="flex">
-              <span className="inline-flex items-center rounded-l-lg border border-r-0 bg-muted px-3 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 rounded-l-lg border border-r-0 bg-muted px-3 text-sm text-muted-foreground">
+                <Phone className="h-3.5 w-3.5" />
                 +91
               </span>
               <input

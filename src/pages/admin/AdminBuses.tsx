@@ -47,6 +47,7 @@ function generateLayout(totalSeats: number): SeatLayoutInput[] {
       row,
       column: col,
       type: posTypes[col - 1] ?? "aisle",
+      isFemaleSeat: false,
     })
   }
   return layout

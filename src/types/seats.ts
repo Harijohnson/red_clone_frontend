@@ -14,6 +14,7 @@ export type SeatEntry = {
   position: SeatPositionType
   price: number
   isLockedByMe: boolean
+  isFemaleSeat: boolean
 }
 
 export type TripSeatsResponse = {
