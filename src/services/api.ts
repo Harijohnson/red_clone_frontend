@@ -3,22 +3,16 @@ import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "a
 import type { ApiError } from "@/types/api"
 
 const TOKEN_KEY = "rc_token"
-
-// Prefer non-prefixed `BACKEND_API_URL` (Vercel/runtime). Fall back to other sources.
-const runtimeMeta = typeof document !== "undefined" ? document.querySelector('meta[name="backend-api-url"]')?.getAttribute("content") : undefined
-const injected = (globalThis as any).__env?.BACKEND_API_URL ?? (globalThis as any).BACKEND_API_URL
-
+// Support both Node (process.env) and Vite (import.meta.env) environments
 const baseURL = (
-  import.meta.env.BACKEND_API_URL ??
-  import.meta.env.VITE_BACKEND_API_URL ??
-  injected ??
-  runtimeMeta
-) as string
+  // when running in Node-like envs (use globalThis to avoid missing 'process' type in browser builds)
+  (typeof globalThis !== "undefined" ? (globalThis as any)?.process?.env?.BACKEND_API_URL : undefined) ||
+  // when running in Vite / browser env with import.meta.env (commonly VITE_ prefix)
+  ((typeof import.meta !== "undefined" ? (import.meta as any).env?.VITE_BACKEND_API_URL : undefined) as string)
+)
 
 if (!baseURL) {
-  throw new Error(
-    "BACKEND_API_URL is not defined. Set it in your deployment environment, or inject it at runtime via a meta tag or globalThis.BACKEND_API_URL."
-  )
+  throw new Error("BACKEND_API_URL is not defined. Check your .env file.")
 }
 
 export const apiClient: AxiosInstance = axios.create({
