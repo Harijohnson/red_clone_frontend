@@ -4,14 +4,18 @@ import type { ApiError } from "@/types/api"
 
 const TOKEN_KEY = "rc_token"
 
-// Vite exposes env vars prefixed with `VITE_` via `import.meta.env`.
-// Prefer `VITE_BACKEND_API_URL`; fall back to legacy `BACKEND_API_URL`.
-const baseURL = (import.meta.env.BACKEND_API_URL ?? import.meta.env.BACKEND_API_URL) as string
+// Prefer non-prefixed `BACKEND_API_URL` (Vercel/runtime). Fall back to other sources.
+const runtimeMeta = typeof document !== "undefined" ? document.querySelector('meta[name="backend-api-url"]')?.getAttribute("content") : undefined
+const baseURL = (
+  import.meta.env.BACKEND_API_URL ??
+  import.meta.env.VITE_BACKEND_API_URL ??
+  (globalThis as any).BACKEND_API_URL ??
+  runtimeMeta
+) as string
 
 if (!baseURL) {
-  // Provide a clearer error with guidance for developers.
   throw new Error(
-    "BACKEND_API_URL is not defined. Add it to frontend/.env or .env.local and restart the dev server."
+    "BACKEND_API_URL is not defined. Set it in your deployment environment, or inject it at runtime via a meta tag or globalThis.BACKEND_API_URL."
   )
 }
 
